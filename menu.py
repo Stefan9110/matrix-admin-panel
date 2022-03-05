@@ -1,7 +1,8 @@
 import color
+from commands import *
 
 
-def main_menu():
+def main_menu(homeserver, token):
     print(
         color.YELLOW + "\n       Choose what you want to do\n" +
         color.YELLOW + "──────────────────────────────────────────\n" +
@@ -15,3 +16,10 @@ def main_menu():
         color.GREEN + "8. " + color.RESET + "❌ Exit\n" +
         color.YELLOW + "──────────────────────────────────────────\n"
     )
+    choice = input("Choice: " + color.RESET)
+    match choice:
+        case '6':
+            list_rooms(homeserver, token)
+            return
+        case '8', _:
+            return
