@@ -1,4 +1,5 @@
 #!/bin/python3
+
 import color
 import menu
 import getpass
@@ -26,7 +27,7 @@ def check_auth(homeserver, auth_token):
                                headers={"Authorization": "Bearer " + auth_token})
     if acc_request.status_code != 200:
         print(prefix() + color.RED + "Invalid auth token!" + color.RESET)
-        exit(0)
+        exit(2)
 
     user = json.loads(acc_request.content.decode())["user_id"]
     print(prefix() + "Logged in as " + color.GREEN + user)
@@ -35,7 +36,7 @@ def check_auth(homeserver, auth_token):
     if requests.get((homeserver + "/_synapse/admin/v1/users/" + user + "/admin"),
                     headers={"Authorization": "Bearer " + auth_token}).status_code != 200:
         print(prefix() + color.RED + "You are not a server admin!" + color.RESET)
-        exit(0)
+        exit(3)
 
 
 # Format url by prefixing https:// if not present
@@ -59,13 +60,17 @@ def main():
     if options.url is not None:
         homeserver = options.url[0]
     else:
-        print(prefix() + "Enter homeserver URL:")
-        homeserver = input()
+        homeserver = input(prefix() + "Enter homeserver URL: ")
 
     # Format homeserver
     homeserver = format_url(homeserver)
 
-    check_auth(homeserver, auth_token)
+    try:
+        check_auth(homeserver, auth_token)
+    except requests.exceptions.ConnectionError:
+        print(prefix() + "Homeserver URL is not valid")
+        exit(1)
+
     menu.main_menu(homeserver, auth_token)
 
 

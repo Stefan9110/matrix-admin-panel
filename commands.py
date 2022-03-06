@@ -8,8 +8,7 @@ from time import time
 
 
 def get_request(homeserver, token, path):
-    return requests.get((homeserver + path),
-                        headers={"Authorization": "Bearer " + token})
+    return requests.get((homeserver + path), headers={"Authorization": "Bearer " + token})
 
 
 def post_request(homeserver, token, path, data):
@@ -33,12 +32,17 @@ def format_time(unix_time):
 
 
 def list_users(homeserver, token):
-    limit = input(color.YELLOW + "Enter user limit: " + color.RESET)
-    request = get_request(homeserver, token, "/_synapse/admin/v2/users?from=0&limit=" + str(limit) + "&guests=false")
+    limit = input(color.YELLOW + "Enter user limit (default none): " + color.RESET)
+    req_path = "/_synapse/admin/v2/users?from=0&limit=" + str(limit) + "&guests=false"
+    if str(limit) == "":
+        req_path = "/_synapse/admin/v2/users?from=0&guests=false"
+
+    request = get_request(homeserver, token, req_path)
     if request.status_code != 200:
+        print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
         return
 
-    print(prefix() + "Fetching user accounts...")
+    print("\n" + prefix() + "Fetching user accounts...")
 
     for user in json.loads(request.content.decode())["users"]:
         print(
@@ -46,7 +50,7 @@ def list_users(homeserver, token):
             color.GREEN + "ID: " + color.RESET + user["name"] + "\n" +
             color.GREEN + "NAME: " + color.RESET + user["displayname"] + "\n" +
             color.GREEN + "IS ADMIN: " + color.RESET + parse_boolean(user["admin"]) + "\n" +
-            color.GREEN + "DEACTIVATED: " + color.RESET + parse_boolean(user["deactivated"]) + "\n"
+            color.GREEN + "DEACTIVATED: " + color.RESET + parse_boolean(user["deactivated"])
         )
     print(color.YELLOW + "──────────────────────────────────────────────────────")
 
@@ -55,6 +59,7 @@ def search_user(homeserver, token):
     query = input(color.YELLOW + "Enter user search query: " + color.RESET)
     request = get_request(homeserver, token, "/_synapse/admin/v2/users?from=0&guests=false")
     if request.status_code != 200:
+        print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
         return
 
     found = False
@@ -81,6 +86,7 @@ def search_user(homeserver, token):
 def list_registration_tokens(homeserver, token):
     request = get_request(homeserver, token, "/_synapse/admin/v1/registration_tokens")
     if request.status_code != 200:
+        print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
         return
 
     found = False
@@ -131,7 +137,7 @@ def create_registration_token(homeserver, token):
 
     request = post_request(homeserver, token, "/_synapse/admin/v1/registration_tokens/new", json.dumps(data))
     if request.status_code != 200:
-        print("ERR " + str(request.status_code) + "\n" + request.content.decode())
+        print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
         return
 
     print(prefix() + "A registration token was created: " +
@@ -153,12 +159,18 @@ def delete_registration_token(homeserver, token):
 
 # List all rooms that are created on the homeserver
 def list_rooms(homeserver, token):
+    limit = input(color.YELLOW + "Enter room limit (default none): " + color.RESET)
+    if str(limit) == "" or not str(limit).isnumeric():
+        limit = 0
+
     request = get_request(homeserver, token, path="/_synapse/admin/v1/rooms")
     if request.status_code != 200:
+        print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
         return
 
     print("\n" + prefix() + "Fetching rooms created on the " + color.GREEN + homeserver + color.RESET + " homeserver")
 
+    count = 0
     for room in json.loads(request.content.decode())["rooms"]:
         # Check whether the room id contains the homeserver link
         if re.sub(r"http(s)?://", "", homeserver) not in room["room_id"]:
@@ -173,4 +185,7 @@ def list_rooms(homeserver, token):
             color.GREEN + "ID: " + color.RESET + room["room_id"] + "\n" +
             color.GREEN + "CREATOR: " + color.RESET + room["creator"]
         )
+        count += 1
+        if count >= int(limit) != 0:
+            break
     print(color.YELLOW + "──────────────────────────────────────────────────────")

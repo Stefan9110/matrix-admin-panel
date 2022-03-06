@@ -8,13 +8,13 @@ def main_menu(homeserver, token):
         color.YELLOW + "──────────────────────────────────────────\n" +
         color.GREEN + "1. " + color.RESET + "👦 List all registered users\n" +
         color.GREEN + "2. " + color.RESET + "👦 Search user account\n" +
-        color.GREEN + "3. " + color.RESET + "👦 Deactivate user account\n" +
+        color.RED + "3. " + color.RESET + "👦 Deactivate user account\n" +
         color.GREEN + "4. " + color.RESET + "🔑 Create registration token\n" +
         color.GREEN + "5. " + color.RESET + "🔑 List registration tokens\n" +
         color.GREEN + "6. " + color.RESET + "🔑 Delete registration token\n" +
         color.GREEN + "7. " + color.RESET + "💬 List all registered rooms\n" +
-        color.GREEN + "8. " + color.RESET + "💬 Delete a room\n" +
-        color.GREEN + "9. " + color.RESET + "❌ Exit\n" +
+        color.RED + "8. " + color.RESET + "💬 Search for a room\n" +
+        color.RED + "9. " + color.RESET + "💬 Delete a room\n" +
         color.YELLOW + "──────────────────────────────────────────\n"
     )
     print("Choice [1-9]: " + color.RESET)
@@ -33,7 +33,7 @@ def main_menu(homeserver, token):
             delete_registration_token(homeserver, token)
         case '7':
             list_rooms(homeserver, token)
-        case '9':
+        case '10':
             exit(0)
         case _:
             exit(0)
