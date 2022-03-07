@@ -26,7 +26,7 @@ def check_auth(homeserver, auth_token):
     acc_request = requests.get((homeserver + "/_matrix/client/r0/account/whoami"),
                                headers={"Authorization": "Bearer " + auth_token})
     if acc_request.status_code != 200:
-        print(prefix() + color.RED + "Invalid auth token!" + color.RESET)
+        print(prefix() + "Invalid auth token!" + color.RED + " ಠ-ಠ" + color.RESET)
         exit(2)
 
     user = json.loads(acc_request.content.decode())["user_id"]
@@ -61,6 +61,10 @@ def main():
         homeserver = options.url[0]
     else:
         homeserver = input(prefix() + "Enter homeserver URL: ")
+
+    if str(homeserver) == "":
+        print(prefix() + "Homeserver cannot be null " + color.RED + "(╯°□°）╯︵ ┻━┻" + color.RESET)
+        exit(-1)
 
     # Format homeserver
     homeserver = format_url(homeserver)

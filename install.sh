@@ -43,7 +43,7 @@ function check_deps() {
 function install() {
 	# Check if already installed
 	if [ -d $DESTINATION_DIR ]; then
-		echo "Already installed. Please delete $DESTINATION_DIR if you want to reinstall."
+		echo "matrix-admin is already installed. If you want to reinstall, please run ./install.sh -r to remove the current installation."
 		exit 1
 	fi
 
