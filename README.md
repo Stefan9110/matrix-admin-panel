@@ -1,5 +1,5 @@
 # Matrix Admin Panel
-This is a tool that aims to provide easy [admin api](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/) access to [Matrix Synapse](https://matrix.org/) homeserver admins. This is a terminal user interface written in Python 10.
+This is a tool that aims to provide easy [admin api](https://matrix-org.github.io/synapse/latest/usage/administration/admin_api/) access to [Matrix Synapse](https://matrix.org/) homeserver admins. This is a terminal user interface written in Python 3.10.
 
 ## Table of contents
 * [FAQ](#faq)
