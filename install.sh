@@ -99,13 +99,13 @@ function uninstall() {
 function update() {
 	# Update local repo if it's not the same as the one in the installation directory
 	if [ -d ".git/" ] && [ "$(pwd)" != "$DESTINATION_DIR" ]; then
-		git pull
+		git pull origin master
 	fi
 
 	# Update repo in the installation directory
 	if [ -d $DESTINATION_DIR ]; then
 		cd $DESTINATION_DIR
-		$AS_ROOT git pull
+		$AS_ROOT git pull origin master
 	fi
 }
 
