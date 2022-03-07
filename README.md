@@ -79,6 +79,18 @@ This may be different depending on the changes you made to the `install.sh` scri
 ```
 
 ## Usage
+After installation, you can run the tool using `matrix-admin` in the command line. For a list of options use `matrix-admin -h`. After running, enter your [auth-token](#authentication-tokens) and matrix homeserver url (can be also provided with the `-u` option).
+
+You will be prompted with a menu like so:
+![Img](https://i.imgur.com/2NW0zIq.png)
+
+Simply choose an option and enter the required fields (if needed).\
+Note that options in **red** will not work, since they are not yet implemented.
+
+#### Authentication tokens
+An authentication token is required to access the admin api. It is safer to use an authentication token instead of username + password, because it can be reset simply by logging out of that session.
+
+You can obtain your authentication token in [Element client](https://element.io/) by going to `Settings -> Help & About -> Advanced -> Access Token`.
 
 ## License
 This project is licensed under the GNU General Public License v3.0. See the `LICENSE` file for more details.
