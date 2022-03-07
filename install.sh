@@ -7,7 +7,9 @@
                                                                     
 # Sudo command; replace with doas if needed
 AS_ROOT="sudo"
+# Destination directory. Modify this to whatever you want (not null)
 DESTINATION_DIR="/opt/matrix-admin-panel"
+# Binary install directory. Modify this if needed (eg: $HOME/.local/bin)
 BIN_DIR="/bin"
 
 FILES="
