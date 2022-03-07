@@ -4,8 +4,8 @@ This is a tool that aims to provide easy [admin api](https://matrix-org.github.i
 ## Table of contents
 * [FAQ](#faq)
 * [Features](#features)
-* [Instsallation](#instasllation)
-* [Usage]()
+* [Instsallation](#installation)
+* [Usage](#usage)
 * [License](#license)
 * [Contributing](#contributing)
 
@@ -39,6 +39,44 @@ This is a tool that aims to provide easy [admin api](https://matrix-org.github.i
 * Delete/Purge/Block a room
 
 ## Installation
+#### Requirements
+* Python >= 3.10.2
+* Pip >= 21.0
+* pip requirements (see `requirements.txt`)
+
+For installation, follow the steps:
+```bash
+git clone https://github.com/Stefan9110/matrix-admin-panel.git 
+cd matrix-admin-panel
+./install.sh
+```
+Currently there is an install script only for unix based systems.
+
+
+#### Manual installation
+Copy the following files & directories into a directory of your choosing:
+* `clioptions.py`
+* `color.py`
+* `main.py`
+* `commands.py`
+* `menu.py`
+* `install.sh`
+* `.git/`
+
+Create a symlink / shortcut to `main.py` in a directory from `PATH`.
+
+Alternatively, you can run the program using `python main.py`.
+
+#### Uninstalling
+```bash
+/opt/matrix-admin-cli/install.sh -r
+```
+This may be different depending on the changes you made to the `install.sh` script yourself. 
+
+#### Updating
+```bash
+/opt/matrix-admin-cli/install.sh -u
+```
 
 ## Usage
 
