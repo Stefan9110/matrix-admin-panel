@@ -29,7 +29,7 @@ def main_menu(homeserver, token):
         color.GREEN + "5. " + color.RESET + "🔑 List registration tokens\n" +
         color.GREEN + "6. " + color.RESET + "🔑 Delete registration token\n" +
         color.GREEN + "7. " + color.RESET + "💬 List all registered rooms\n" +
-        color.RED + "8. " + color.RESET + "💬 Search for a room\n" +
+        color.GREEN + "8. " + color.RESET + "💬 Search for a room\n" +
         color.RED + "9. " + color.RESET + "💬 Delete a room\n" +
         color.YELLOW + "──────────────────────────────────────────\n"
     )
@@ -49,6 +49,8 @@ def main_menu(homeserver, token):
             delete_registration_token(homeserver, token)
         case '7':
             list_rooms(homeserver, token)
+        case '8':
+            search_room(homeserver, token)
         case '10':
             exit(0)
         case _:

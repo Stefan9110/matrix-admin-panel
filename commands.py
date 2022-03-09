@@ -19,8 +19,8 @@ import json
 import color
 from main import prefix
 import re
-from datetime import datetime
 from time import time
+import tui
 
 
 def get_request(homeserver, token, path):
@@ -33,18 +33,6 @@ def post_request(homeserver, token, path, data):
 
 def delete_request(homeserver, token, path):
     return requests.delete((homeserver + path), headers={"Authorization": "Bearer " + token})
-
-
-def parse_boolean(b):
-    if b:
-        return "yes"
-    return "no"
-
-
-def format_time(unix_time):
-    if unix_time is None:
-        return "no"
-    return datetime.utcfromtimestamp(int(unix_time) / 1000).strftime('%d %b %Y %H:%M:%S')
 
 
 def list_users(homeserver, token):
@@ -61,13 +49,8 @@ def list_users(homeserver, token):
     print("\n" + prefix() + "Fetching user accounts...")
 
     for user in json.loads(request.content.decode())["users"]:
-        print(
-            color.YELLOW + "──────────────────────────────────────────────────────\n" +
-            color.GREEN + "ID: " + color.RESET + user["name"] + "\n" +
-            color.GREEN + "NAME: " + color.RESET + user["displayname"] + "\n" +
-            color.GREEN + "IS ADMIN: " + color.RESET + parse_boolean(user["admin"]) + "\n" +
-            color.GREEN + "DEACTIVATED: " + color.RESET + parse_boolean(user["deactivated"])
-        )
+        print(color.YELLOW + "──────────────────────────────────────────────────────")
+        tui.print_user(user)
     print(color.YELLOW + "──────────────────────────────────────────────────────")
 
 
@@ -86,14 +69,9 @@ def search_user(homeserver, token):
             continue
 
         found = True
-        print(
-            color.YELLOW + "──────────────────────────────────────────────────────\n" +
-            color.GREEN + "ID: " + color.RESET + user["name"] + "\n" +
-            color.GREEN + "NAME: " + color.RESET + user["displayname"] + "\n" +
-            color.GREEN + "IS ADMIN: " + color.RESET + parse_boolean(user["admin"]) + "\n" +
-            color.GREEN + "DEACTIVATED: " + color.RESET + parse_boolean(user["deactivated"]) + "\n" +
-            color.YELLOW + "──────────────────────────────────────────────────────\n"
-        )
+        print(color.YELLOW + "──────────────────────────────────────────────────────")
+        tui.print_user(user)
+        print(color.YELLOW + "──────────────────────────────────────────────────────")
 
     if not found:
         print(prefix() + "User not found...")
@@ -111,13 +89,8 @@ def list_registration_tokens(homeserver, token):
 
     for reg_token in json.loads(request.content.decode())["registration_tokens"]:
         found = True
-        print(
-            color.YELLOW + "──────────────────────────────────────────────────────\n" +
-            color.GREEN + "TOKEN: " + color.RESET + reg_token["token"] + "\n" +
-            color.GREEN + "USES ALLOWED: " + color.RESET + str(reg_token["uses_allowed"]) + "\n" +
-            color.GREEN + "TOTAL USES: " + color.RESET + str(reg_token["completed"]) + "\n" +
-            color.GREEN + "EXPIRES: " + color.RESET + format_time(reg_token["expiry_time"]) + "\n"
-        )
+        print(color.YELLOW + "──────────────────────────────────────────────────────")
+        tui.print_registration_token(reg_token)
 
     if not found:
         print(prefix() + "No registration tokens were found.")
@@ -156,8 +129,13 @@ def create_registration_token(homeserver, token):
         print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
         return
 
+    created_token = json.loads(request.content.decode())
     print(prefix() + "A registration token was created: " +
-          color.GREEN + json.loads(request.content.decode())["token"] + color.RESET)
+          color.GREEN + created_token["token"] + color.RESET)
+
+    print(color.YELLOW + "──────────────────────────────────────────────────────")
+    tui.print_registration_token(created_token)
+    print(color.YELLOW + "──────────────────────────────────────────────────────")
 
 
 def delete_registration_token(homeserver, token):
@@ -194,14 +172,36 @@ def list_rooms(homeserver, token):
 
         # Print room data
         print(color.YELLOW + "──────────────────────────────────────────────────────")
-        if room["name"] is not None:
-            print(color.GREEN + "NAME: " + color.RESET + room["name"])
+        tui.print_room(room)
 
-        print(
-            color.GREEN + "ID: " + color.RESET + room["room_id"] + "\n" +
-            color.GREEN + "CREATOR: " + color.RESET + room["creator"]
-        )
         count += 1
         if count >= int(limit) != 0:
             break
     print(color.YELLOW + "──────────────────────────────────────────────────────")
+
+
+def search_room(homeserver, token):
+    to_search = input(color.YELLOW + "Enter room query: " + color.RESET)
+
+    request = get_request(homeserver, token, path="/_synapse/admin/v1/rooms")
+    if request.status_code != 200:
+        print(prefix() + "An error as occurred (" + str(request.status_code) + ")")
+        return
+
+    found = False
+    for room in json.loads(request.content.decode())["rooms"]:
+        # Check whether room is valid
+        if re.sub(r"http(s)?://", "", homeserver) not in room["room_id"] \
+                or room["name"] is None \
+                or to_search.lower() not in str(room["name"]).lower():
+            continue
+
+        found = True
+        # Print room data
+        print(color.YELLOW + "──────────────────────────────────────────────────────")
+        tui.print_room(room)
+
+    if not found:
+        print(prefix() + "No room was found...")
+    else:
+        print(color.YELLOW + "──────────────────────────────────────────────────────")

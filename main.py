@@ -41,7 +41,8 @@ def check_auth(homeserver, auth_token):
     acc_request = requests.get((homeserver + "/_matrix/client/r0/account/whoami"),
                                headers={"Authorization": "Bearer " + auth_token})
     if acc_request.status_code != 200:
-        print(prefix() + "Invalid auth token!" + color.RED + " ಠ-ಠ" + color.RESET)
+        print(prefix() + "Invalid auth token!" +
+              color.RED + " ಠ-ಠ" + color.RESET)
         exit(2)
 
     user = json.loads(acc_request.content.decode())["user_id"]
@@ -63,13 +64,16 @@ def format_url(url):
 
 def main():
     # Define options
-    parser = argparse.ArgumentParser(description="A powerful CLI for managing your Matrix homeserver!")
+    parser = argparse.ArgumentParser(
+        description="A powerful CLI for managing your Matrix homeserver!")
     arg_define(parser)
     global options
     options = parser.parse_args()
 
-    print(color.RED + LOGO + color.YELLOW + "\n               Welcome to Matrix Admin Control Panel!\n" + color.RESET)
-    auth_token = getpass.getpass(prefix() + "Enter your matrix admin account authentication token: ")
+    print(color.RED + LOGO + color.YELLOW +
+          "\n               Welcome to Matrix Admin Control Panel!\n" + color.RESET)
+    auth_token = getpass.getpass(
+        prefix() + "Enter your matrix admin account authentication token: ")
 
     # Obtain homeserver from options or from stdin
     if options.url is not None:
@@ -78,7 +82,8 @@ def main():
         homeserver = input(prefix() + "Enter homeserver URL: ")
 
     if str(homeserver) == "":
-        print(prefix() + "Homeserver cannot be null " + color.RED + "(╯°□°）╯︵ ┻━┻" + color.RESET)
+        print(prefix() + "Homeserver cannot be null " +
+              color.RED + "(╯°□°）╯︵ ┻━┻" + color.RESET)
         exit(-1)
 
     # Format homeserver

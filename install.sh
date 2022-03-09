@@ -20,7 +20,7 @@
 # |_|  |_/_/   \_\_| |_| \_\___/_/\_\ /_/   \_\____/|_|  |_|___|_| \_|
 #                  Install script - Made by Stefan9110
                                                                     
-# Sudo command; replace with doas if needed
+# Root privileges command; replace with doas if needed
 AS_ROOT="sudo"
 # Destination directory. Modify this to whatever you want (not null)
 DESTINATION_DIR="/opt/matrix-admin-panel"
