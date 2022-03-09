@@ -34,6 +34,7 @@ main.py
 commands.py
 menu.py
 install.sh
+tui.py
 .git/
 "
 
@@ -71,7 +72,7 @@ function install() {
 
 	# Copy required files to installation dir
 	echo "Creating $DESTINATION_DIR"
-	$AS_ROOT mkdir -p $DESTINATION_DIR
+	$AS_ROOT mkdir -p $DESTINATION_DIR || exit 1
 	for i_file in $FILES; do
 		echo "Copying $i_file to $DESTINATION_DIR/$i_file"
 		$AS_ROOT cp -r $i_file $DESTINATION_DIR
@@ -92,11 +93,12 @@ function uninstall() {
 
 	# Remove installation directory and binary symlink
 	echo "Removing $DESTINATION_DIR and $BIN_DIR/matrix-admin"
-	$AS_ROOT rm -r "$DESTINATION_DIR" "$BIN_DIR/matrix-admin"
+	$AS_ROOT rm -r "$DESTINATION_DIR" "$BIN_DIR/matrix-admin" || exit 1
 	echo "Successfully uninstalled"
 }
 
 function update() {
+	#TODO: Update $FILES accordingly with new install script
 	# Update local repo if it's not the same as the one in the installation directory
 	if [ -d ".git/" ] && [ "$(pwd)" != "$DESTINATION_DIR" ]; then
 		git pull origin master
